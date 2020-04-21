@@ -2,18 +2,18 @@
 <template>
     <div class="login-container">
         <!-- //做登录页面 -->
-      <el-form ref="form" :model="user" class="login-from">
+      <el-form ref="login-from" :model="user" :rules="rules" class="login-from">
         <div class="login-img">
           <img src="./logo_index.png" alt="" class="login-logo">
         </div>
-        <el-form-item>
+        <el-form-item prop="mobile">
           <el-input v-model="user.mobile" placeholder="请输入手机号"></el-input>
         </el-form-item>
-        <el-form-item>
+        <el-form-item prop="code">
           <el-input v-model="user.code" placeholder="请输入密码"></el-input>
         </el-form-item>
-        <el-form-item>
-          <el-checkbox v-model="checked">我已阅读并同意用户协议和隐私条款</el-checkbox>
+        <el-form-item prop="checked">
+          <el-checkbox v-model="user.checked">我已阅读并同意用户协议和隐私条款</el-checkbox>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit" class="login-button" :loading="loginLoading">登录</el-button>
@@ -23,7 +23,8 @@
 </template>
 
 <script>
-import request from '@/utils/axios'
+import { userLogin } from '@/api/user'
+import indexView from '@/views/home/index.vue'
 export default {
   name: 'loginIndex',
   props: {},
@@ -31,11 +32,33 @@ export default {
   data () {
     return {
       user: {
-        mobile: '',
-        code: ''
+        mobile: '13911111111',
+        code: '246810',
+        checked: false
       },
-      checked: false,
-      loginLoading: false
+      loginLoading: false,
+      rules: {
+        mobile: [
+          { required: true, message: '手机号不能为空', trigger: 'change' },
+          { pattern: /^1[3|5|7|8|9]\d{9}$/, message: '请正确输入号码格式', trigger: 'change' }
+        ],
+        code: [
+          { required: true, message: '验证码不能为空', trigger: 'change' },
+          { pattern: /^\d{6}$/, message: '请正确输入验证码格式', trigger: 'change' }
+        ],
+        checked: [
+          {
+            validator: (rule, value, callback) => {
+              if (value) {
+                callback()
+              } else {
+                callback(new Error('请同意用户协议'))
+              }
+            },
+            trigger: 'change'
+          }
+        ]
+      }
     }
   },
   computed: {},
@@ -43,20 +66,27 @@ export default {
   // 方法集合
   methods: {
     onSubmit () {
+      // 调用validate,完成对表单的验证
+      this.$refs['login-from'].validate(valid => {
+        // 如果表单验证不通过,阻止下边代码执行
+        if (!valid) {
+          return
+        }
+        // 表单验证通过,发送ajax请求等操作
+        this.login()
+      })
+    },
+    login () {
+      // 将按钮变成加载状态
       this.loginLoading = true
-      request({
-        method: 'post',
-        url: '/mp/v1_0/authorizations',
-        data: this.user
-      }).then(res => {
-        console.log(res)
-        this.$message({
-          message: '登陆成功',
-          type: 'success'
-        })
+      userLogin(this.user).then(res => {
+        // 登陆成功跳转页面
+        this.$router.push({ name: indexView })
+        // 按钮取消记载状态
         this.loginLoading = false
       }).catch(() => {
         this.$message.error('登陆失败')
+        // 按钮取消加载状态
         this.loginLoading = false
       })
     }
