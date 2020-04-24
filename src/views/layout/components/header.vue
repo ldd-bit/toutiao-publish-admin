@@ -1,7 +1,7 @@
 <template>
 <div class='header-containter'>
   <div class="header-title">
-    <i class="el-icon-s-fold"></i>
+    <i class="el-icon-s-fold" @click="isCollapse"></i>
     <span>江苏传智播客科技教育有限公司</span>
   </div>
   <el-dropdown>
@@ -15,7 +15,7 @@
         <i class="el-icon-setting"></i>
         <span>个人设置</span>
       </el-dropdown-item>
-      <el-dropdown-item>
+      <el-dropdown-item @click.native="exitLogin">
         <i class="el-icon-unlock"></i>
         <span>退出登录</span>
       </el-dropdown-item>
@@ -32,7 +32,8 @@ export default {
   components: {},
   data () {
     return {
-      user: {}
+      user: {},
+      msg: false
     }
   },
   computed: {},
@@ -42,6 +43,25 @@ export default {
     getUserInfo () {
       getUserInfo().then(res => {
         this.user = res.data.data
+      })
+    },
+    isCollapse () {
+      this.msg = !this.msg
+      this.$emit('myEvent', this.msg)
+    },
+    exitLogin () {
+      this.$confirm('您确认退出吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        window.localStorage.removeItem('user')
+        this.$router.push('/login')
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
       })
     }
   },

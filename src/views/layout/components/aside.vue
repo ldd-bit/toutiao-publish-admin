@@ -2,15 +2,17 @@
   <!-- 后台界面侧边栏 -->
 <el-row class="tac">
   <el-col>
-    <div class="imgAside">
-      <img src="./logo_admin.png" alt="" class="logoAdmin">
-    </div>
     <el-menu
-      default-active="2"
+      default-active="/"
       router
       background-color="#002033"
       text-color="#fff"
+      :collapse="isCollapse"
       active-text-color="#ffd04b">
+      <div class="imgAside">
+      <div class="imgMin"><img src="./logo_min.png" alt="" class="logomin" v-show="isCollapse"></div>
+       <img src="./logo_admin.png" alt="" class="logoAdmin" v-show="!isCollapse">
+      </div>
       <el-menu-item index="/">
         <i class="el-icon-s-home"></i>
         <span slot="title">首页</span>
@@ -48,10 +50,13 @@
 
 export default {
   name: 'indexAside',
-  props: {},
+  props: ['is-collapse'],
   components: {},
   data () {
     return {
+      // isCollapse: false,
+      // isShowMin: false,
+      // isShowMax: true
     }
   },
   computed: {},
@@ -70,10 +75,21 @@ export default {
   height: 100%;
   background-color: #002033;
   .imgAside {
-    text-align: center;
+    // text-align: center;
+    width: 100%;
+    margin-left: 20px;
+    .imgMin {
+      width: 100%;
+      .logomin {
+      width: 50px;
+      margin: 12px 0 9px 0;
+      margin-left: -7px;
+      }
+    }
     .logoAdmin {
-    width: 140px;
-    margin: 12px 0 9px 0;
+      // display: none;
+      // width: 140px;
+      margin: 12px 0 9px 0;
   }
   }
   .el-menu-item {

@@ -24,7 +24,7 @@
 
 <script>
 import { userLogin } from '@/api/user'
-import indexView from '@/views/home/index.vue'
+// import indexView from '@/views/home/index.vue'
 export default {
   name: 'loginIndex',
   props: {},
@@ -81,21 +81,22 @@ export default {
       this.loginLoading = true
       userLogin(this.user).then(res => {
         // 登陆成功跳转页面
-        this.$router.push({ name: indexView })
+        window.localStorage.setItem('user', JSON.stringify(res.data.data))
+        this.$router.push({ name: 'indexRouter' })
+        // console.log(res)
         // 按钮取消记载状态
         this.loginLoading = false
       }).catch(() => {
         this.$message.error('登陆失败')
         // 按钮取消加载状态
         this.loginLoading = false
+        // console.log(err)
       })
     }
   },
   created () {
-
   },
   mounted () {
-
   }
 }
 </script>

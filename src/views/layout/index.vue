@@ -1,12 +1,12 @@
 <!--  -->
 <template>
   <el-container class="index-container">
-    <el-aside width="200px">
-      <index-aside></index-aside>
+    <el-aside width="auto">
+      <index-aside :is-collapse="isCollapse"></index-aside>
     </el-aside>
     <el-container>
       <el-header>
-        <index-header></index-header>
+        <index-header @myEvent="fn"></index-header>
       </el-header>
       <el-main>
         <router-view></router-view>
@@ -27,6 +27,7 @@ export default {
   },
   data () {
     return {
+      isCollapse: false
     }
   },
   computed: {},
@@ -34,6 +35,9 @@ export default {
   },
   // 方法集合
   methods: {
+    fn (data) {
+      this.isCollapse = data
+    }
   },
   created () {
   },
