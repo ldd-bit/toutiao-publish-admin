@@ -12,13 +12,13 @@
     <!-- 卡片身体 -->
     <el-form ref="form" :model="form" label-width="80px">
       <el-form-item label="状态">
-        <el-radio-group v-model="form.resource">
-          <el-radio label="全部"></el-radio>
-          <el-radio label="草稿"></el-radio>
-          <el-radio label="待审核"></el-radio>
-          <el-radio label="审核通过"></el-radio>
-          <el-radio label="审核失败"></el-radio>
-          <el-radio label="已删除"></el-radio>
+        <el-radio-group v-model="status">
+          <el-radio>全部</el-radio>
+          <el-radio label="0">草稿</el-radio>
+          <el-radio label="1">待审核</el-radio>
+          <el-radio label="2">审核通过</el-radio>
+          <el-radio label="3">审核失败</el-radio>
+          <el-radio label="4">已删除</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="频道">
@@ -44,7 +44,7 @@
         </div>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary">筛选</el-button>
+        <el-button type="primary" @click="filter">筛选</el-button>
       </el-form-item>
     </el-form>
 <!-- 卡片身体 -->
@@ -52,10 +52,11 @@
 <!-- 展示文章部分 -->
   <el-card class="box-card2">
     <div slot="header" class="clearfix">
-      根据筛选条件共查询到 46147 条结果：
+      根据筛选条件共查询到 {{total}} 条结果：
     </div>
     <template>
     <el-table
+      v-loading="loading"
       :data="articles"
       style="width: 100%">
       <el-table-column
@@ -65,7 +66,7 @@
           <el-image
             style="width: 100px; height: 100px"
             :src="scope.row.cover.images[0]"
-            :fit="cover"
+            fit="cover"
             lazy>
             <div slot="placeholder" style="text-align: center">
               加载中<span class="dot">...</span>
@@ -80,8 +81,7 @@
       </el-table-column>
       <el-table-column
         label="状态"
-        width="230"
-        >
+        width="230">
         <template slot-scope="scope">
           <el-tag :type="state[scope.row.status].type">{{state[scope.row.status].text}}</el-tag>
         </template>
@@ -99,6 +99,15 @@
       </el-table-column>
     </el-table>
   </template>
+  <el-pagination
+    background
+    layout="prev, pager, next"
+    :total="total"
+    :disabled="loading"
+    :page-size="pageSize"
+    :current-page.sync="page"
+    @current-change="gainPage">
+  </el-pagination>
   </el-card>
 <!-- 展示文章部分 -->
 </div>
@@ -124,21 +133,45 @@ export default {
         { status: 2, text: '审核通过', type: 'success' },
         { status: 3, text: '审核失败', type: 'warning' },
         { status: 4, text: '已删除', type: 'danger' }
-      ]
+      ],
+      page: 1,
+      pageSize: 10,
+      total: null,
+      loading: false,
+      status: null
     }
   },
   computed: {},
   watch: {},
   // 方法集合
   methods: {
+    // 获取文章
     getArticle () {
+      this.loading = true
       articleSearch({
-        page: 2
+        // 当前页
+        page: this.page,
+        // 每页的条数
+        per_page: this.pageSize,
+        status: this.status
       }).then(res => {
-        console.log(res)
+        // console.log(res)
+        this.loading = false
         this.articles = res.data.data.results
-        console.log(this.articles)
+        // 总条数
+        this.total = res.data.data.total_count
+        // console.log(this.articles)
       })
+    },
+    // 当页码发生改变
+    gainPage () {
+      // console.log(this.page)
+      this.getArticle()
+    },
+    // 筛选数据
+    filter () {
+      this.page = 1
+      this.getArticle()
     }
   },
   created () {
