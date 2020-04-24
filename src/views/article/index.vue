@@ -10,36 +10,33 @@
     </div>
     <!-- 卡片头部 -->
     <!-- 卡片身体 -->
-    <el-form ref="form" :model="form" label-width="80px">
+    <el-form ref="form" label-width="80px">
       <el-form-item label="状态">
         <el-radio-group v-model="status">
-          <el-radio>全部</el-radio>
-          <el-radio label="0">草稿</el-radio>
-          <el-radio label="1">待审核</el-radio>
-          <el-radio label="2">审核通过</el-radio>
-          <el-radio label="3">审核失败</el-radio>
-          <el-radio label="4">已删除</el-radio>
+          <el-radio :label="null">全部</el-radio>
+          <el-radio :label="0">草稿</el-radio>
+          <el-radio :label="1">待审核</el-radio>
+          <el-radio :label="2">审核通过</el-radio>
+          <el-radio :label="3">审核失败</el-radio>
+          <el-radio :label="4">已删除</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="频道">
-        <el-select v-model="form.region" placeholder="请选择">
-          <el-option label="开发者资讯" value="kaifa"></el-option>
-          <el-option label="ios" value="ios"></el-option>
-          <el-option label="c++" value="c"></el-option>
-          <el-option label="android" value="android"></el-option>
-          <el-option label="css" value="css"></el-option>
-          <el-option label="数据库" value="mysql"></el-option>
-          <el-option label="区块链" value="qukuai"></el-option>
+        <el-select v-model="channelId" placeholder="请选择">
+          <el-option label="全部" :value="null"></el-option>
+          <el-option v-for="item in channels" :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="活动时间">
         <div class="block">
           <el-date-picker
-            v-model="value1"
+            v-model="value"
             type="daterange"
             range-separator="至"
             start-placeholder="开始日期"
-            end-placeholder="结束日期">
+            end-placeholder="结束日期"
+            format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd">
           </el-date-picker>
         </div>
       </el-form-item>
@@ -114,18 +111,14 @@
 </template>
 
 <script>
-import { articleSearch } from '@/api/article'
+import { articleSearch, articlechannels } from '@/api/article'
 export default {
   name: 'articleMent',
   props: {},
   components: {},
   data () {
     return {
-      form: {
-        resource: '',
-        region: ''
-      },
-      value1: '',
+      value: null,
       articles: [],
       state: [
         { status: 0, text: '草稿', type: 'info' },
@@ -138,7 +131,9 @@ export default {
       pageSize: 10,
       total: null,
       loading: false,
-      status: null
+      status: null,
+      channels: [],
+      channelId: null
     }
   },
   computed: {},
@@ -153,7 +148,11 @@ export default {
         page: this.page,
         // 每页的条数
         per_page: this.pageSize,
-        status: this.status
+        status: this.status,
+        channel_id: this.channelId,
+        // 因为this.value为null的话this.value[0]会报错
+        begin_pubdate: this.value ? this.value[0] : null,
+        end_pubdate: this.value ? this.value[1] : null
       }).then(res => {
         // console.log(res)
         this.loading = false
@@ -172,10 +171,19 @@ export default {
     filter () {
       this.page = 1
       this.getArticle()
+    },
+    // 获取频道
+    getChannels () {
+      articlechannels().then(res => {
+        // console.log(res)
+        // console.log(res.data.data.channels[0].name)
+        this.channels = res.data.data.channels
+      })
     }
   },
   created () {
     this.getArticle()
+    this.getChannels()
   },
   mounted () {}
 }
