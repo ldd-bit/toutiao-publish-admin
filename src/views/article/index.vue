@@ -91,8 +91,10 @@
       <el-table-column
         prop="address"
         label="操作">
-        <el-button type="primary" icon="el-icon-edit" circle></el-button>
-        <el-button type="danger" icon="el-icon-delete" circle></el-button>
+        <template slot-scope="scope">
+          <el-button type="primary" icon="el-icon-edit" circle @click="$router.push(`/publish?id=${scope.row.id}`)"></el-button>
+          <el-button type="danger" icon="el-icon-delete" circle @click="delArticles(scope.row.id)"></el-button>
+        </template>
       </el-table-column>
     </el-table>
   </template>
@@ -111,7 +113,7 @@
 </template>
 
 <script>
-import { articleSearch, articlechannels } from '@/api/article'
+import { articleSearch, articlechannels, delArticle } from '@/api/article'
 export default {
   name: 'articleMent',
   props: {},
@@ -141,11 +143,11 @@ export default {
   // 方法集合
   methods: {
     // 获取文章
-    getArticle () {
+    getArticle (page) {
       this.loading = true
       articleSearch({
         // 当前页
-        page: this.page,
+        page,
         // 每页的条数
         per_page: this.pageSize,
         status: this.status,
@@ -165,12 +167,11 @@ export default {
     // 当页码发生改变
     gainPage () {
       // console.log(this.page)
-      this.getArticle()
+      this.getArticle(this.page)
     },
     // 筛选数据
     filter () {
-      this.page = 1
-      this.getArticle()
+      this.getArticle(1)
     },
     // 获取频道
     getChannels () {
@@ -179,10 +180,33 @@ export default {
         // console.log(res.data.data.channels[0].name)
         this.channels = res.data.data.channels
       })
+    },
+    // 删除文章
+    delArticles (id) {
+      console.log(id)
+      console.log(id.toString())
+      this.$confirm('确认删除吗？', '删除提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        delArticle(id.toString()).then(res => {
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          })
+          this.getArticle(this.page)
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     }
   },
   created () {
-    this.getArticle()
+    this.getArticle(1)
     this.getChannels()
   },
   mounted () {}

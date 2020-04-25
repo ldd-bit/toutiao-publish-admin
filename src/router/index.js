@@ -4,6 +4,7 @@ import login from '@/views/login/login'
 import indexRouter from '@/views/home/index'
 import indexLayout from '@/views/layout/index'
 import article from '@/views/article/index'
+import publishArticle from '@/views/publish/index'
 Vue.use(VueRouter)
 
 const routes = [
@@ -14,7 +15,8 @@ const routes = [
     component: indexLayout,
     children: [
       { path: '', name: 'indexRouter', component: indexRouter },
-      { path: '/article', name: 'articleMent', component: article }
+      { path: '/article', name: 'articleMent', component: article },
+      { path: '/publish', name: 'publishArticle', component: publishArticle }
     ]
   }
 ]
