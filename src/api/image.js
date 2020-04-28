@@ -15,3 +15,20 @@ export const getImage = (params) => {
     params
   })
 }
+// 收藏图片素材
+export const collectImage = (id, collect) => {
+  return request({
+    method: 'PUT',
+    url: `/mp/v1_0/user/images/${id}`,
+    data: {
+      collect
+    }
+  })
+}
+// 删除图片素材
+export const selectImage = (id) => {
+  return request({
+    method: 'DELETE',
+    url: `/mp/v1_0/user/images/${id}`
+  })
+}
