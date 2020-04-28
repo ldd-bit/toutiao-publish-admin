@@ -104,12 +104,14 @@ export default {
         this.total = res.data.data.total_count
         this.images = res.data.data.results
         this.loadingImage = false
+        console.log(this.images)
       })
     },
     // 获取收藏图片
     selectImage () {
       this.getImages(1)
     },
+    // 上传成功
     success () {
       this.$message({
         message: '上传成功',
