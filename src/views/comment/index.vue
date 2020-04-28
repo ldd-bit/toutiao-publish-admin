@@ -9,33 +9,45 @@
     </div>
     <el-table
       class="comment-list"
-      :data="tableData"
+      :data="comment"
       style="width: 100%">
       <el-table-column
-        prop="date"
-        label="日期">
+        prop="title"
+        label="标题">
       </el-table-column>
       <el-table-column
-        prop="name"
-        label="姓名">
+        prop="total_comment_count"
+        label="总评论数">
       </el-table-column>
       <el-table-column
-        prop="address"
-        label="地址">
+        prop="fans_comment_count"
+        label="粉丝评论数">
       </el-table-column>
       <el-table-column
-        prop="address"
-        label="地址">
+        label="状态">
+        <template slot-scope="scope">
+          <div>
+            {{scope.row.comment_status ? '开启' : '关闭'}}
+          </div>
+        </template>
       </el-table-column>
       <el-table-column
-        prop="address"
-        label="地址">
+        label="操作">
+        <template slot-scope="scope">
+          <el-switch
+            v-model="scope.row.comment_status"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            @change="commentStatus(scope.row)">
+          </el-switch>
+        </template>
       </el-table-column>
     </el-table>
+    <!-- //分页 -->
     <el-pagination
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page="currentPage4"
+      :current-page.sync="currentPage"
       :page-sizes="[100, 200, 300, 400]"
       :page-size="100"
       layout="total, sizes, prev, pager, next, jumper"
@@ -46,30 +58,18 @@
 </template>
 
 <script>
-
+import {
+  articleSearch,
+  editcomment
+} from '@/api/article'
 export default {
   name: 'commentIndex',
   props: {},
   components: {},
   data () {
     return {
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }]
+      comment: [],
+      currentPage: 1
     }
   },
   computed: {},
@@ -77,9 +77,28 @@ export default {
   // 方法集合
   methods: {
     handleSizeChange (val) {},
-    handleCurrentChange (val) {}
+    // 当页码发生改变时
+    handleCurrentChange (val) {},
+    // 获取评论列表
+    getComment () {
+      articleSearch({
+        response_type: 'comment'
+      }).then(res => {
+        // console.log(res)
+        this.comment = res.data.data.results
+      })
+    },
+    // 更改评论状态
+    commentStatus (item) {
+      console.log(item)
+      editcomment(item.id.toString(), item.comment_status).then(res => {
+        console.log(res)
+      })
+    }
   },
-  created () {},
+  created () {
+    this.getComment()
+  },
   mounted () {}
 }
 </script>
