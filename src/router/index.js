@@ -7,6 +7,7 @@ import article from '@/views/article/index'
 import publishArticle from '@/views/publish/index'
 import image from '@/views/image/index'
 import comment from '@/views/comment/index'
+import setting from '@/views/setting/index'
 Vue.use(VueRouter)
 
 const routes = [
@@ -20,7 +21,8 @@ const routes = [
       { path: '/article', name: 'articleMent', component: article },
       { path: '/publish', name: 'publishArticle', component: publishArticle },
       { path: '/image', name: 'image', component: image },
-      { path: '/comment', name: 'comment', component: comment }
+      { path: '/comment', name: 'comment', component: comment },
+      { path: '/settings', name: 'setting', component: setting }
     ]
   }
 ]
