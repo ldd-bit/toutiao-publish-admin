@@ -14,3 +14,19 @@ export const getUserInfo = () => {
     url: '/mp/v1_0/user/profile'
   })
 }
+// 上传用户头像
+export const getUserAvatar = data => {
+  return request({
+    method: 'PATCH',
+    url: '/mp/v1_0/user/photo',
+    data
+  })
+}
+// 编辑用户信息
+export const editUserInfo = data => {
+  return request({
+    method: 'PATCH',
+    url: '/mp/v1_0/user/profile',
+    data
+  })
+}

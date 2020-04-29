@@ -137,6 +137,7 @@ export default {
     },
     // 上传成功
     success () {
+      this.dialogVisible = false
       this.$message({
         message: '上传成功',
         type: 'success'
@@ -146,7 +147,6 @@ export default {
     },
     // 确定上传
     uploadSure () {
-      this.dialogVisible = false
       this.$refs.upload.submit()
     },
     // 实现分页
