@@ -26,6 +26,7 @@
 
 <script>
 import { getUserInfo } from '@/api/user'
+import globalBus from '@/utils/global-bus'
 export default {
   name: 'indexHeader',
   props: {},
@@ -67,6 +68,11 @@ export default {
   },
   created () {
     this.getUserInfo()
+    globalBus.$on('update-user', (data) => {
+      this.user.name = data.name
+      this.user.photo = data.photo
+      // console.log(data)
+    })
   },
   mounted () {}
 }
