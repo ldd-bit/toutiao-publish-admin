@@ -22,10 +22,27 @@
         <el-radio :label="0">无图</el-radio>
         <el-radio :label="-1">自动</el-radio>
       </el-radio-group>
+      <div class="uploadImage">
+        <template v-if="article.cover.type > 0">
+          <upload-cover
+            v-for="(item,i) in article.cover.type"
+            :key="i"
+            style="margin-right: 10px"
+            v-model="article.cover.images[i]"
+          >
+          </upload-cover>
+        </template>
+      </div>
     </el-form-item>
     <el-form-item label="频道" prop="channel_id">
       <el-select v-model="article.channel_id" placeholder="请选择">
-        <el-option v-for="item in channels" :key="item.id" :label="item.name" :value="item.id"></el-option>
+        <el-option
+          v-for="item in channels"
+          :key="item.id"
+          :label="item.name"
+          :value="item.id"
+        >
+        </el-option>
       </el-select>
     </el-form-item>
     <el-form-item>
@@ -59,17 +76,21 @@ import {
 } from 'element-tiptap'
 import 'element-tiptap/lib/index.css'
 import { postImage } from '@/api/image'
+import UploadCover from '@/views/publish/component/upload-cover'
 export default {
   name: 'publishIndex',
   props: {},
-  components: { 'el-tiptap': ElementTiptap },
+  components: {
+    'el-tiptap': ElementTiptap,
+    UploadCover
+  },
   data () {
     return {
       article: {
         title: '',
         content: '',
         cover: {
-          type: 0,
+          type: 1,
           images: []
         },
         channel_id: null
@@ -183,4 +204,7 @@ export default {
 }
 </script>
 <style lang='less' scoped>
+.uploadImage {
+  display: flex;
+}
 </style>

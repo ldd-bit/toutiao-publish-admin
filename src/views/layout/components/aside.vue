@@ -3,7 +3,7 @@
 <el-row class="tac">
   <el-col>
     <el-menu
-      default-active="/"
+      :default-active="$route.path"
       router
       background-color="#002033"
       text-color="#fff"
