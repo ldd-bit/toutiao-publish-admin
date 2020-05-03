@@ -7,71 +7,104 @@
         <el-breadcrumb-item>粉丝管理</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <div class="container-header">
-        <el-link href="https://element.eleme.io" target="_blank" :underline="false" class="fansList">粉丝列表</el-link>
-        <el-link href="https://element.eleme.io" target="_blank" :underline="false" class="fansImage">粉丝画像</el-link>
-      <div class="container-header-left"></div>
-    </div>
-    <el-row :gutter="20">
-      <el-col :span="3" v-for="(item, i) in fansInfo" :key="i">
-        <div class="grid-content bg-purple">
-          <el-avatar :size="80" :src="item.photo">
-          </el-avatar>
-          <span class="userName">{{item.name}}</span>
-          <el-button type="primary" plain size="small">+关注</el-button>
-        </div>
-      </el-col>
-    </el-row>
+    <template>
+      <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+        <el-tab-pane label="粉丝列表" name="粉丝列表">
+          <el-row :gutter="20" v-loading="isLoading">
+            <el-col :span="3" v-for="(item, i) in fansInfo" :key="i">
+              <div class="grid-content bg-purple">
+                <el-avatar :size="80" :src="item.photo">
+                </el-avatar>
+                <span class="userName">{{item.name}}</span>
+                <el-button type="primary" plain size="small">+关注</el-button>
+              </div>
+            </el-col>
+          </el-row>
+          <el-pagination
+            background
+            layout="prev, pager, next"
+            :page="page"
+            :page-size="pageSize"
+            :current-page.sync="page"
+            @current-change="getFansInfo(page)"
+            :total="total"
+            :disabled="sure">
+          </el-pagination>
+        </el-tab-pane>
+        <el-tab-pane label="粉丝画像" name="粉丝画像">
+          <div style="width: 700px;height: 500px" ref="main"></div>
+        </el-tab-pane>
+      </el-tabs>
+    </template>
   </el-card>
 </div>
 </template>
 
 <script>
 import { getFans } from '@/api/fans'
+import echarts from 'echarts'
 export default {
-  name: '',
+  name: 'fansIndex',
   props: {},
   components: {},
   data () {
     return {
-      fansInfo: []
+      fansInfo: [],
+      page: 1, // 页数
+      pageSize: 24, // 每页数量
+      total: 0, // 数据总数
+      isLoading: false,
+      sure: false,
+      activeName: '粉丝列表'
     }
   },
   computed: {},
   watch: {},
   // 方法集合
   methods: {
-    getFansInfo () {
-      getFans().then(res => {
+    getFansInfo (page) {
+      this.isLoading = true
+      this.sure = true
+      getFans({
+        page: page,
+        per_page: this.pageSize
+      }).then(res => {
         // console.log(res)
+        this.isLoading = false
+        this.sure = false
         this.fansInfo = res.data.data.results
+        this.total = res.data.data.total_count
       })
+    },
+    handleClick (tab, event) {
+      console.log(tab, event)
     }
   },
   created () {
-    this.getFansInfo()
+    this.getFansInfo(1)
   },
-  mounted () {}
+  mounted () {
+    const myChart = echarts.init(this.$refs.main)
+    const option = {
+      xAxis: {
+        type: 'category',
+        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+      },
+      yAxis: {
+        type: 'value'
+      },
+      series: [{
+        data: [120, 200, 150, 80, 70, 110, 130],
+        type: 'bar'
+      }]
+    }
+    myChart.setOption(option)
+  }
 }
 </script>
 <style lang='less' scoped>
 .container-header {
   display: flex;
-}
-.fansList {
-  width: 70px;
-  padding: 10px 15px;
-  border: 1px solid #e4e7ed;
-}
-.fansImage {
-  width: 70px;
-  padding: 10px 15px;
-  border: 1px solid #e4e7ed;
-  border-left: 0 none;
-}
-.container-header-left {
-  width: 100%;
-  border-bottom: 1px solid #e4e7ed;
 }
 .grid-content {
   display: flex;
