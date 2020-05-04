@@ -26,7 +26,7 @@
         <template v-if="article.cover.type > 0">
           <upload-cover
             v-for="(item,i) in article.cover.type"
-            :key="i"
+            :key="item"
             style="margin-right: 10px"
             v-model="article.cover.images[i]"
           >
@@ -90,7 +90,7 @@ export default {
         title: '',
         content: '',
         cover: {
-          type: 1,
+          type: 1, // 单图
           images: []
         },
         channel_id: null

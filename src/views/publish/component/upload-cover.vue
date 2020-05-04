@@ -1,6 +1,6 @@
 <template>
 <div class='upload-cover-container'>
-  <div class="imageSquare" @click="dialogVisible = true">
+  <div class="imageSquare" @click="selectcover">
     <img style="width:150px;height:150px" ref="cover-image">
     <!-- <img v-else src="./pic_bg.png" style="width:150px;height:150px"> -->
   </div>
@@ -43,6 +43,9 @@ export default {
   watch: {},
   // 方法集合
   methods: {
+    selectcover () {
+      this.dialogVisible = true
+    },
     showImage (file) {
       // console.log(this.$refs.file.files[0])
       const blob = window.URL.createObjectURL(this.$refs.file.files[0])
@@ -67,8 +70,9 @@ export default {
         postImage(file).then(res => {
           // console.log(res)
           this.$refs['cover-image'].src = res.data.data.url
+          this.dialogVisible = false
+          this.$emit('input', res.data.data.url)
         })
-        this.dialogVisible = false
       }
     }
   },
