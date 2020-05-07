@@ -143,9 +143,9 @@ export default {
   // 方法集合
   methods: {
     // 获取文章
-    getArticle (page) {
+    async getArticle (page) {
       this.loading = true
-      articleSearch({
+      const res = await articleSearch({
         // 当前页
         page,
         // 每页的条数
@@ -155,14 +155,13 @@ export default {
         // 因为this.value为null的话this.value[0]会报错
         begin_pubdate: this.value ? this.value[0] : null,
         end_pubdate: this.value ? this.value[1] : null
-      }).then(res => {
-        // console.log(res)
-        this.loading = false
-        this.articles = res.data.data.results
-        // 总条数
-        this.total = res.data.data.total_count
-        // console.log(this.articles)
       })
+      // console.log(res)
+      this.loading = false
+      this.articles = res.data.data.results
+      // 总条数
+      this.total = res.data.data.total_count
+      // console.log(this.articles)
     },
     // 当页码发生改变
     gainPage () {
@@ -174,33 +173,30 @@ export default {
       this.getArticle(1)
     },
     // 获取频道
-    getChannels () {
-      articlechannels().then(res => {
-        // console.log(res)
-        // console.log(res.data.data.channels[0].name)
-        this.channels = res.data.data.channels
-      })
+    async getChannels () {
+      const res = await articlechannels()
+      // console.log(res)
+      // console.log(res.data.data.channels[0].name)
+      this.channels = res.data.data.channels
     },
     // 删除文章
     delArticles (id) {
-      console.log(id)
-      console.log(id.toString())
+      // console.log(id)
+      // console.log(id.toString())
       this.$confirm('确认删除吗？', '删除提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        console.log(id)
         delArticle(id.toString()).then(res => {
           this.$message({
             message: '删除成功',
             type: 'success'
           })
           this.getArticle(this.page)
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
+        }).catch(err => {
+          console.log(err)
         })
       })
     }

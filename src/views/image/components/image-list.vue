@@ -102,26 +102,25 @@ export default {
   // 方法集合
   methods: {
     // 获取图片素材
-    getImages (page) {
+    async getImages (page) {
       // 启动图片加载
       this.loadingImage = true
       // 重置分页按钮高亮
       this.page = page
-      getImage({
+      const res = await getImage({
         collect: this.collect,
         page,
         per_page: this.per_page
-      }).then(res => {
-        // console.log(res)
-        this.total = res.data.data.total_count
-        this.images = res.data.data.results
-        this.images = this.images.map(item => {
-          item.loading = false
-          return item
-        })
-        this.loadingImage = false
-        // console.log(this.images)
       })
+      // console.log(res)
+      this.total = res.data.data.total_count
+      this.images = res.data.data.results
+      this.images = this.images.map(item => {
+        item.loading = false
+        return item
+      })
+      this.loadingImage = false
+      // console.log(this.images)
     },
     // 获取收藏图片
     selectImage () {
@@ -146,7 +145,7 @@ export default {
       this.getImages(this.page)
     },
     // 收藏素材
-    start (data) {
+    async start (data) {
       data.loading = true
       console.log(data.loading)
       // this.images = this.images.map(item => {
@@ -159,9 +158,8 @@ export default {
       // })
       data.is_collected = !data.is_collected
       // console.log(this.images)
-      collectImage(data.id, data.is_collected).then(res => {
-        data.loading = false
-      })
+      await collectImage(data.id, data.is_collected)
+      data.loading = false
     },
     // 删除素材
     delect (data) {
@@ -170,14 +168,13 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       })
-        .then(() => {
-          selectImage(data.id).then(res => {
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
-            })
-            this.getImages(this.page)
+        .then(async () => {
+          await selectImage(data.id)
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
           })
+          this.getImages(this.page)
         })
         .catch(() => {
           return false

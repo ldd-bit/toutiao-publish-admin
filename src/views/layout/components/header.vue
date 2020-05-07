@@ -41,10 +41,9 @@ export default {
   watch: {},
   // 方法集合
   methods: {
-    getUserInfo () {
-      getUserInfo().then(res => {
-        this.user = res.data.data
-      })
+    async getUserInfo () {
+      const res = await getUserInfo()
+      this.user = res.data.data
     },
     isCollapse () {
       this.msg = !this.msg

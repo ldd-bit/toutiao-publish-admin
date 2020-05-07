@@ -3,8 +3,7 @@
   <div class="imageSquare" @click="selectcover">
     <img style="width:150px;height:150px" ref="cover-image">
     <!-- <img v-else src="./pic_bg.png" style="width:150px;height:150px"> -->
-  </div>
-  <el-dialog
+    <el-dialog
     :visible.sync="dialogVisible"
     width="50%"
     :append-to-body="true">
@@ -16,7 +15,7 @@
             <img ref="preview-image" style="width:180px">
           </div>
         </label>
-        <input ref="file" type="file" id="file" hidden @change="showImage">
+        <input ref="file" type="file" id="file" @change="showImage">
       </el-tab-pane>
     </el-tabs>
     <span slot="footer" class="dialog-footer">
@@ -24,6 +23,7 @@
       <el-button type="primary" @click="uploadCover">确 定</el-button>
     </span>
   </el-dialog>
+  </div>
 </div>
 </template>
 
@@ -53,7 +53,7 @@ export default {
       // console.log(this.image)
     },
     // 确认上传图片
-    uploadCover () {
+    async uploadCover () {
       // 判断是否是上传图片模块
       if (this.activeName === 'second') {
       // 判断file是否为空
@@ -67,12 +67,11 @@ export default {
         // 上传素材
         const file = new FormData()
         file.append('image', this.$refs.file.files[0])
-        postImage(file).then(res => {
-          // console.log(res)
-          this.$refs['cover-image'].src = res.data.data.url
-          this.dialogVisible = false
-          this.$emit('input', res.data.data.url)
-        })
+        const res = await postImage(file)
+        // console.log(res)
+        this.$refs['cover-image'].src = res.data.data.url
+        this.dialogVisible = false
+        // this.$emit('input', res.data.data.url)
       }
     }
   },

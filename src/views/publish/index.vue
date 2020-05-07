@@ -22,11 +22,11 @@
         <el-radio :label="0">无图</el-radio>
         <el-radio :label="-1">自动</el-radio>
       </el-radio-group>
-      <div class="uploadImage">
+      <div class="uploadImage" >
         <template v-if="article.cover.type > 0">
           <upload-cover
             v-for="(item,i) in article.cover.type"
-            :key="item"
+            :key="i"
             style="margin-right: 10px"
             v-model="article.cover.images[i]"
           >
@@ -161,43 +161,39 @@ export default {
     },
     // 发表文章
     addArticle1 (draft) {
-      this.$refs.publish.validate(valid => {
+      this.$refs.publish.validate(async valid => {
         if (!valid) {
           return false
-        } else {
-          // console.log(222)
-          const editId = this.$route.query.id
-          if (editId) {
-            editIdArticle(this.article, editId, draft).then(() => {
-              this.$message({
-                message: draft ? '存入草稿成功' : '修改成功',
-                type: 'success'
-              })
-              this.$router.push('/article')
-            })
-          } else {
-            console.log(1223)
-            addArticle(this.article, draft).then(() => {
-              this.$message({
-                message: draft ? '存入草稿成功' : '发布成功',
-                type: 'success'
-              })
-              this.$router.push('/article')
-            })
-          }
         }
+        // console.log(222)
+        const editId = this.$route.query.id
+        if (editId) {
+          await editIdArticle(this.article, editId, draft)
+          this.$message({
+            message: draft ? '存入草稿成功' : '修改成功',
+            type: 'success'
+          })
+          this.$router.push('/article')
+          return
+        }
+        console.log(1223)
+        await addArticle(this.article, draft)
+        this.$message({
+          message: draft ? '存入草稿成功' : '发布成功',
+          type: 'success'
+        })
+        this.$router.push('/article')
       })
     }
   },
-  created () {
+  async created () {
     this.getChannel()
     const id = this.$route.query.id
     if (id) {
       // 获取指定文章
-      getIdArticle(id).then(res => {
-        this.article = res.data.data
-        // console.log(res)
-      })
+      const res = await getIdArticle(id)
+      this.article = res.data.data
+      // console.log(res)
     }
   },
   mounted () {}

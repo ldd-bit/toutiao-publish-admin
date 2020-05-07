@@ -99,23 +99,20 @@ export default {
     // 提交左侧表单
     onSubmit () {
       // this.submit = true
-      this.$refs.message.validate(valid => {
+      this.$refs.message.validate(async valid => {
         if (!valid) {
           return false
-        } else {
-          editUserInfo(this.message).then(res => {
-            // this.submit = false
-            globalBus.$emit('update-user', this.message)
-          })
         }
+        await editUserInfo(this.message)
+        // this.submit = false
+        globalBus.$emit('update-user', this.message)
       })
     },
     // 获取左边表单的数据
-    getMessage () {
-      getUserInfo().then(res => {
-        // console.log(res)
-        this.message = res.data.data
-      })
+    async getMessage () {
+      const res = await getUserInfo()
+      // console.log(res)
+      this.message = res.data.data
     },
     // 当选择头像的input标签发生改变时
     selectAvatar () {
@@ -145,18 +142,17 @@ export default {
     // 点击上传图片
     uploadAvatar () {
       this.IsSure = true
-      this.cropper.getCroppedCanvas().toBlob(blob => {
+      this.cropper.getCroppedCanvas().toBlob(async blob => {
         // console.log(blob)
         const file = new FormData()
         file.append('photo', blob)
         // console.log(file)
-        getUserAvatar(file).then(res => {
-          // console.log(res)
-          this.IsSure = false
-          this.dialogVisible = false
-          this.message.photo = window.URL.createObjectURL(blob)
-          globalBus.$emit('update-user', this.message) // 更新头部信息
-        })
+        await getUserAvatar(file)
+        // console.log(res)
+        this.IsSure = false
+        this.dialogVisible = false
+        this.message.photo = window.URL.createObjectURL(blob)
+        globalBus.$emit('update-user', this.message) // 更新头部信息
       })
     }
   },

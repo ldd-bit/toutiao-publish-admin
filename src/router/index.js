@@ -1,14 +1,14 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import login from '@/views/login/login'
-import indexRouter from '@/views/home/index'
-import indexLayout from '@/views/layout/index'
-import article from '@/views/article/index'
-import publishArticle from '@/views/publish/index'
-import image from '@/views/image/index'
-import comment from '@/views/comment/index'
-import setting from '@/views/setting/index'
-import fans from '@/views/fans/index'
+const login = () => import('@/views/login/login')
+const indexRouter = () => import('@/views/home/index')
+const indexLayout = () => import('@/views/layout/index')
+const article = () => import('@/views/article/index')
+const publishArticle = () => import('@/views/publish/index')
+const image = () => import('@/views/image/index')
+const comment = () => import('@/views/comment/index')
+const setting = () => import('@/views/setting/index')
+const fans = () => import('@/views/fans/index')
 Vue.use(VueRouter)
 
 const routes = [

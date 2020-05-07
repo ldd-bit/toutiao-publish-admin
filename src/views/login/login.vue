@@ -76,22 +76,23 @@ export default {
         this.login()
       })
     },
-    login () {
+    async login () {
       // 将按钮变成加载状态
       this.loginLoading = true
-      userLogin(this.user).then(res => {
+      try {
+        const res = await userLogin(this.user)
         // 登陆成功跳转页面
         window.localStorage.setItem('user', JSON.stringify(res.data.data))
         this.$router.push({ name: 'indexRouter' })
         // console.log(res)
         // 按钮取消记载状态
         this.loginLoading = false
-      }).catch(() => {
+      } catch {
         this.$message.error('登陆失败')
         // 按钮取消加载状态
         this.loginLoading = false
         // console.log(err)
-      })
+      }
     }
   },
   created () {

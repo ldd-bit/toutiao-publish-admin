@@ -90,21 +90,20 @@ export default {
       this.getComment()
     },
     // 获取评论列表
-    getComment () {
-      articleSearch({
+    async getComment () {
+      const res = await articleSearch({
         per_page: this.pageSize,
         page: this.currentPage,
         response_type: 'comment'
-      }).then(res => {
-        console.log(res)
-        this.comment = res.data.data.results
-        this.comment = this.comment.map(item => {
-          item.loading = false
-          return item
-        })
-        // console.log(this.comment)
-        this.total = res.data.data.total_count
       })
+      console.log(res)
+      this.comment = res.data.data.results
+      this.comment = this.comment.map(item => {
+        item.loading = false
+        return item
+      })
+      // console.log(this.comment)
+      this.total = res.data.data.total_count
     },
     // 更改评论状态
     commentStatus (item) {

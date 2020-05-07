@@ -62,19 +62,18 @@ export default {
   watch: {},
   // 方法集合
   methods: {
-    getFansInfo (page) {
+    async getFansInfo (page) {
       this.isLoading = true
       this.sure = true
-      getFans({
+      const res = await getFans({
         page: page,
         per_page: this.pageSize
-      }).then(res => {
-        // console.log(res)
-        this.isLoading = false
-        this.sure = false
-        this.fansInfo = res.data.data.results
-        this.total = res.data.data.total_count
       })
+      // console.log(res)
+      this.isLoading = false
+      this.sure = false
+      this.fansInfo = res.data.data.results
+      this.total = res.data.data.total_count
     },
     handleClick (tab, event) {
       console.log(tab, event)
