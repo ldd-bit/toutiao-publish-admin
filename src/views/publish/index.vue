@@ -28,7 +28,7 @@
             v-for="(item,i) in article.cover.type"
             :key="i"
             style="margin-right: 10px"
-            v-model="article.cover.images[i]"
+            @upload="onUpdateCover"
           >
           </upload-cover>
         </template>
@@ -184,6 +184,10 @@ export default {
         })
         this.$router.push('/article')
       })
+    },
+    // 获取子组件传过来的图片链接
+    onUpdateCover (url) {
+      console.log(url)
     }
   },
   async created () {

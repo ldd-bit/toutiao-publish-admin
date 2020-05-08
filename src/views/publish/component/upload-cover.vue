@@ -10,12 +10,10 @@
     <el-tabs v-model="activeName" type="card">
       <el-tab-pane label="素材库" name="first">素材库</el-tab-pane>
       <el-tab-pane label="上传图片" name="second">
-        <label for="file">
-          <div class="imageSquare1">
+          <div class="imageSquare1" @click="$refs.file.click()">
             <img ref="preview-image" style="width:180px">
           </div>
-        </label>
-        <input ref="file" type="file" id="file" @change="showImage">
+        <input ref="file" type="file" id="file" hidden @change="showImage">
       </el-tab-pane>
     </el-tabs>
     <span slot="footer" class="dialog-footer">
@@ -71,7 +69,7 @@ export default {
         // console.log(res)
         this.$refs['cover-image'].src = res.data.data.url
         this.dialogVisible = false
-        // this.$emit('input', res.data.data.url)
+        this.$emit('upload', res.data.data.url)
       }
     }
   },
