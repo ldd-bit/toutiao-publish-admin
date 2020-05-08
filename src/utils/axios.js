@@ -1,6 +1,7 @@
 import axios from 'axios'
 import JSONbig from 'json-bigint'
 import router from '@/router'
+import { Message } from 'element-ui'
 const request = axios.create({
   baseURL: 'http://ttapi.research.itcast.cn/',
   transformResponse: [function (data) {
@@ -35,6 +36,7 @@ request.interceptors.response.use(function (response) {
   if (error.response && error.response.status === 401) {
     router.push('/login')
     localStorage.removeItem('user')
+    Message('登录状态无效,请重新登陆')
   }
   return Promise.reject(error)
 })
