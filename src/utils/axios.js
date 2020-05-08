@@ -1,5 +1,6 @@
 import axios from 'axios'
 import JSONbig from 'json-bigint'
+import router from '@/router'
 const request = axios.create({
   baseURL: 'http://ttapi.research.itcast.cn/',
   transformResponse: [function (data) {
@@ -11,7 +12,7 @@ const request = axios.create({
     }
   }]
 })
-// 设置拦截器
+// 设置请求拦截器
 request.interceptors.request.use(
   (config) => {
     // console.log(config)
@@ -26,4 +27,15 @@ request.interceptors.request.use(
     return config
   }
 )
+// 设置响应拦截器
+request.interceptors.response.use(function (response) {
+  // 所有响应码为2xx的响应都会进入这里
+  return response
+}, function (error) {
+  if (error.response && error.response.status === 401) {
+    router.push('/login')
+    localStorage.removeItem('user')
+  }
+  return Promise.reject(error)
+})
 export default request

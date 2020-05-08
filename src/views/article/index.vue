@@ -188,15 +188,13 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        console.log(id)
+        // console.log(id)
         delArticle(id.toString()).then(res => {
           this.$message({
             message: '删除成功',
             type: 'success'
           })
           this.getArticle(this.page)
-        }).catch(err => {
-          console.log(err)
         })
       })
     }

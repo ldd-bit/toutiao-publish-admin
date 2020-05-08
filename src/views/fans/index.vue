@@ -76,7 +76,7 @@ export default {
       this.total = res.data.data.total_count
     },
     handleClick (tab, event) {
-      console.log(tab, event)
+      // console.log(tab, event)
     }
   },
   created () {

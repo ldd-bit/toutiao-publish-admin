@@ -110,7 +110,7 @@ export default {
             const data = new FormData()
             data.append('image', file)
             return postImage(data).then(res => {
-              console.log(res)
+              // console.log(res)
               return res.data.data.url
             })
           }
@@ -176,7 +176,7 @@ export default {
           this.$router.push('/article')
           return
         }
-        console.log(1223)
+        // console.log(1223)
         await addArticle(this.article, draft)
         this.$message({
           message: draft ? '存入草稿成功' : '发布成功',

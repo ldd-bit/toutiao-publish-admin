@@ -147,7 +147,7 @@ export default {
     // 收藏素材
     async start (data) {
       data.loading = true
-      console.log(data.loading)
+      // console.log(data.loading)
       // this.images = this.images.map(item => {
       //   if (data.id === item.id) {
       //     item.is_collected = !data.is_collected

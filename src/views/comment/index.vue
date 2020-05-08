@@ -96,7 +96,7 @@ export default {
         page: this.currentPage,
         response_type: 'comment'
       })
-      console.log(res)
+      // console.log(res)
       this.comment = res.data.data.results
       this.comment = this.comment.map(item => {
         item.loading = false
